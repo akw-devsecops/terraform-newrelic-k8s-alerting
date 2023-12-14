@@ -41,6 +41,7 @@ No modules.
 | [newrelic_nrql_alert_condition.node_memory_high](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/nrql_alert_condition) | resource |
 | [newrelic_nrql_alert_condition.pod-not-ready](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/nrql_alert_condition) | resource |
 | [newrelic_nrql_alert_condition.replicaset-not-desired-amount](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/nrql_alert_condition) | resource |
+| [newrelic_nrql_alert_condition.volume_out_of_space](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/nrql_alert_condition) | resource |
 | [newrelic_workflow.cluster](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/workflow) | resource |
 | [newrelic_workflow.namespace](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/workflow) | resource |
 

@@ -6,7 +6,8 @@ resource "newrelic_alert_policy" "cluster" {
 }
 
 resource "newrelic_nrql_alert_condition" "cluster_does_not_response" {
-  count                          = var.cluster_policy ? 1 : 0
+  count = var.cluster_policy ? 1 : 0
+
   name                           = "Cluster doesn't response"
   policy_id                      = newrelic_alert_policy.cluster.0.id
   violation_time_limit_seconds   = 86400
@@ -28,7 +29,8 @@ resource "newrelic_nrql_alert_condition" "cluster_does_not_response" {
 }
 
 resource "newrelic_nrql_alert_condition" "node_cpu_high" {
-  count                          = var.cluster_policy ? 1 : 0
+  count = var.cluster_policy ? 1 : 0
+
   name                           = "Node allocatable CPU utilization % is too high"
   policy_id                      = newrelic_alert_policy.cluster.0.id
   violation_time_limit_seconds   = 86400
@@ -57,7 +59,8 @@ resource "newrelic_nrql_alert_condition" "node_cpu_high" {
 }
 
 resource "newrelic_nrql_alert_condition" "node_memory_high" {
-  count                          = var.cluster_policy ? 1 : 0
+  count = var.cluster_policy ? 1 : 0
+
   name                           = "Node allocatable memory utilization % is too high"
   policy_id                      = newrelic_alert_policy.cluster.0.id
   violation_time_limit_seconds   = 86400
@@ -86,7 +89,8 @@ resource "newrelic_nrql_alert_condition" "node_memory_high" {
 }
 
 resource "newrelic_nrql_alert_condition" "node_disk_high" {
-  count                          = var.cluster_policy ? 1 : 0
+  count = var.cluster_policy ? 1 : 0
+
   name                           = "Node disk % is too high"
   policy_id                      = newrelic_alert_policy.cluster.0.id
   violation_time_limit_seconds   = 86400
