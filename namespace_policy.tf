@@ -6,7 +6,8 @@ resource "newrelic_alert_policy" "namespace" {
 }
 
 resource "newrelic_nrql_alert_condition" "container-cpu-high" {
-  for_each                       = toset(var.namespaces)
+  for_each = toset(var.namespaces)
+
   name                           = "Container CPU usage % is too high"
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
@@ -35,7 +36,8 @@ resource "newrelic_nrql_alert_condition" "container-cpu-high" {
 }
 
 resource "newrelic_nrql_alert_condition" "container-memory-high" {
-  for_each                       = toset(var.namespaces)
+  for_each = toset(var.namespaces)
+
   name                           = "Container memory usage % is too high"
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
@@ -64,7 +66,8 @@ resource "newrelic_nrql_alert_condition" "container-memory-high" {
 }
 
 resource "newrelic_nrql_alert_condition" "pod-not-ready" {
-  for_each                       = toset(var.namespaces)
+  for_each = toset(var.namespaces)
+
   name                           = "Pod is not ready"
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
@@ -86,7 +89,8 @@ resource "newrelic_nrql_alert_condition" "pod-not-ready" {
 }
 
 resource "newrelic_nrql_alert_condition" "container-out-of-space" {
-  for_each                       = toset(var.namespaces)
+  for_each = toset(var.namespaces)
+
   name                           = "Container is running out of space"
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
@@ -115,7 +119,8 @@ resource "newrelic_nrql_alert_condition" "container-out-of-space" {
 }
 
 resource "newrelic_nrql_alert_condition" "replicaset-not-desired-amount" {
-  for_each                       = toset(var.namespaces)
+  for_each = toset(var.namespaces)
+
   name                           = "ReplicaSet doesn't have desired amount of pods"
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
