@@ -154,7 +154,7 @@ resource "newrelic_nrql_alert_condition" "volume_out_of_space" {
   fill_option                    = "last_value"
 
   nrql {
-    query = "FROM Metric SELECT average(k8s.volume.fsUsedPercent) WHERE k8s.clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET k8s.pvcName"
+    query = "FROM Metric SELECT average(k8s.volume.fsUsedPercent) WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.namespaceName = '${each.value}' FACET k8s.pvcName"
   }
 
   critical {
