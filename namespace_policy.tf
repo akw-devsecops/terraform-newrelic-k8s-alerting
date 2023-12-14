@@ -136,6 +136,37 @@ resource "newrelic_nrql_alert_condition" "replicaset-not-desired-amount" {
   }
 }
 
+resource "newrelic_nrql_alert_condition" "volume_out_of_space" {
+  for_each = toset(var.namespaces)
+
+  name                           = "PVC is running out of space"
+  policy_id                      = newrelic_alert_policy.namespace[each.value].id
+  violation_time_limit_seconds   = 86400
+  expiration_duration            = 300
+  close_violations_on_expiration = true
+  aggregation_method             = "event_timer"
+  aggregation_timer              = 60
+  fill_option                    = "last_value"
+
+  nrql {
+    query = "FROM Metric SELECT average(k8s.volume.fsUsedPercent) WHERE k8s.clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET k8s.pvcName"
+  }
+
+  critical {
+    operator              = "above"
+    threshold             = 90
+    threshold_duration    = 300
+    threshold_occurrences = "all"
+  }
+
+  warning {
+    operator              = "above"
+    threshold             = 75
+    threshold_duration    = 300
+    threshold_occurrences = "all"
+  }
+}
+
 resource "newrelic_notification_channel" "email_namespace" {
   for_each = {
     for policy in newrelic_alert_policy.namespace : policy.name => policy if var.email_alert_recipient != null
