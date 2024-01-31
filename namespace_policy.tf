@@ -100,7 +100,7 @@ resource "newrelic_nrql_alert_condition" "jod_not_ready" {
   aggregation_timer              = 60
 
   nrql {
-    query = "FROM K8sPodSample SELECT latest(isReady) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' AND status != 'Succeeded' AND createdKind == 'Job' FACET podName"
+    query = "FROM K8sPodSample SELECT latest(isReady) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' AND status != 'Succeeded' AND createdKind = 'Job' FACET podName"
   }
 
   critical {
