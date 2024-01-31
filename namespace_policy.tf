@@ -83,7 +83,30 @@ resource "newrelic_nrql_alert_condition" "pod-not-ready" {
   critical {
     operator              = "equals"
     threshold             = 0
-    threshold_duration    = 600
+    threshold_duration    = 300
+    threshold_occurrences = "all"
+  }
+}
+
+resource "newrelic_nrql_alert_condition" "jod_not_ready" {
+  for_each = toset(var.namespaces)
+
+  name                           = "Job is not ready"
+  policy_id                      = newrelic_alert_policy.namespace[each.value].id
+  violation_time_limit_seconds   = 86400
+  expiration_duration            = 300
+  close_violations_on_expiration = true
+  aggregation_method             = "event_timer"
+  aggregation_timer              = 60
+
+  nrql {
+    query = "FROM K8sPodSample SELECT latest(isReady) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' AND status != 'Succeeded' AND createdKind == 'Job' FACET podName"
+  }
+
+  critical {
+    operator              = "equals"
+    threshold             = 0
+    threshold_duration    = 300
     threshold_occurrences = "all"
   }
 }
