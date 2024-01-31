@@ -83,7 +83,7 @@ resource "newrelic_nrql_alert_condition" "pod-not-ready" {
   critical {
     operator              = "equals"
     threshold             = 0
-    threshold_duration    = 600
+    threshold_duration    = 300
     threshold_occurrences = "all"
   }
 }
@@ -106,7 +106,7 @@ resource "newrelic_nrql_alert_condition" "jod_not_ready" {
   critical {
     operator              = "equals"
     threshold             = 0
-    threshold_duration    = 600
+    threshold_duration    = 300
     threshold_occurrences = "all"
   }
 }
