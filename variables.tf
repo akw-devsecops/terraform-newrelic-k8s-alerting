@@ -32,3 +32,9 @@ variable "namespaces" {
   default     = []
   description = "List of namespaces to be monitored."
 }
+
+variable "enable_job_alerting" {
+  type        = bool
+  default     = true
+  description = "Determines whether to alert on job errors."
+}

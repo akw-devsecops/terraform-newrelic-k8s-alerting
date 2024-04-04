@@ -88,10 +88,11 @@ resource "newrelic_nrql_alert_condition" "pod-not-ready" {
   }
 }
 
-resource "newrelic_nrql_alert_condition" "jod_not_ready" {
+resource "newrelic_nrql_alert_condition" "job_not_ready" {
   for_each = toset(var.namespaces)
 
   name                           = "Job is not ready"
+  enabled                        = var.enable_job_alerting
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
