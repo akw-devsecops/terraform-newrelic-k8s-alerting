@@ -88,7 +88,7 @@ resource "newrelic_nrql_alert_condition" "pod-not-ready" {
   }
 }
 
-resource "newrelic_nrql_alert_condition" "jod_not_ready" {
+resource "newrelic_nrql_alert_condition" "job_not_ready" {
   for_each = toset(var.namespaces)
 
   name                           = "Job is not ready"

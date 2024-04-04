@@ -36,6 +36,7 @@ No modules.
 | [newrelic_nrql_alert_condition.container-cpu-high](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/nrql_alert_condition) | resource |
 | [newrelic_nrql_alert_condition.container-memory-high](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/nrql_alert_condition) | resource |
 | [newrelic_nrql_alert_condition.container-out-of-space](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/nrql_alert_condition) | resource |
+| [newrelic_nrql_alert_condition.job_not_ready](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/nrql_alert_condition) | resource |
 | [newrelic_nrql_alert_condition.node_cpu_high](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/nrql_alert_condition) | resource |
 | [newrelic_nrql_alert_condition.node_disk_high](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/nrql_alert_condition) | resource |
 | [newrelic_nrql_alert_condition.node_memory_high](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/nrql_alert_condition) | resource |
