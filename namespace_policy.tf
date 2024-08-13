@@ -17,7 +17,7 @@ resource "newrelic_nrql_alert_condition" "container-cpu-high" {
   aggregation_timer              = 60
 
   nrql {
-    query = "FROM K8sContainerSample SELECT average(cpuCoresUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET containerName"
+    query = "FROM K8sContainerSample SELECT average(cpuCoresUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET podName"
   }
 
   critical {
@@ -47,7 +47,7 @@ resource "newrelic_nrql_alert_condition" "container-memory-high" {
   aggregation_timer              = 60
 
   nrql {
-    query = "FROM K8sContainerSample SELECT average(memoryWorkingSetUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET containerName"
+    query = "FROM K8sContainerSample SELECT average(memoryWorkingSetUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET podName"
   }
 
   critical {
@@ -124,7 +124,7 @@ resource "newrelic_nrql_alert_condition" "container-out-of-space" {
   aggregation_timer              = 60
 
   nrql {
-    query = "FROM K8sContainerSample SELECT average(fsUsedPercent) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET containerName"
+    query = "FROM K8sContainerSample SELECT average(fsUsedPercent) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET podName"
   }
 
   critical {
