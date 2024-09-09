@@ -122,28 +122,6 @@ resource "newrelic_nrql_alert_condition" "node_disk_high" {
   }
 }
 
-#resource "newrelic_nrql_alert_condition" "node_uptime_12h" {
-#  count                          = var.cluster_policy ? 1 : 0
-#  name                           = "Node uptime > 12h"
-#  policy_id                      = newrelic_alert_policy.cluster.0.id
-#  violation_time_limit_seconds   = 86400
-#  expiration_duration            = 300
-#  close_violations_on_expiration = true
-#  aggregation_method             = "event_timer"
-#  aggregation_timer              = 60
-#
-#  nrql {
-#    query = "FROM K8sPodSample SELECT (latest(timestamp) - min(createdAt*1000))/1000/60/60 AS 'uptime (hours)' WHERE clusterName = '${var.cluster_name}' AND createdBy = 'aws-node' AND nodeName in (FROM K8sNodeSample SELECT uniques(nodeName) WHERE clusterName = '${var.cluster_name}' AND `label.one.newrelic.com/node-uptime-alert` = '12h') FACET nodeName"
-#  }
-#
-#  critical {
-#    operator              = "above"
-#    threshold             = 12
-#    threshold_duration    = 60
-#    threshold_occurrences = "all"
-#  }
-#}
-
 resource "newrelic_notification_channel" "email_cluster" {
   for_each = {
     for policy in newrelic_alert_policy.cluster : policy.name => policy if var.email_alert_recipient != null
