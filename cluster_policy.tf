@@ -160,6 +160,7 @@ resource "newrelic_notification_channel" "google_chat_cluster" {
                   "keyValue" : {
                     "topLabel" : "NEW RELIC INCIDENT {{issueId}}",
                     "content" : "{{issueTitle}}",
+                    "contentMultiline" : "true"
                     "onClick" : {
                       "openLink" : {
                         "url" : "{{issuePageUrl}}"
