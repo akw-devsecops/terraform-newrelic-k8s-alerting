@@ -233,7 +233,7 @@ resource "newrelic_notification_channel" "google_chat_namespace" {
                 {
                   "keyValue" : {
                     "topLabel" : "NEW RELIC INCIDENT {{issueId}}",
-                    "content" : "{{#eq 'HIGH' priority}}WARNING{{else}}{{priority}}{{/eq}} - {{#if issueClosedAt}}closed{{else if issueAcknowledgedAt}}acknowledged{{else}}open{{/if}}",
+                    "content" : "{{issueTitle}}",
                     "onClick" : {
                       "openLink" : {
                         "url" : "{{issuePageUrl}}"
@@ -247,8 +247,8 @@ resource "newrelic_notification_channel" "google_chat_namespace" {
               "widgets" : [
                 {
                   "keyValue" : {
-                    "content" : "{{accumulations.conditionName.[0]}}",
-                    "topLabel" : "Condition"
+                    "content" : "{{#eq 'HIGH' priority}}WARNING{{else}}{{priority}}{{/eq}} - {{#if issueClosedAt}}closed{{else if issueAcknowledgedAt}}acknowledged{{else}}open{{/if}}",
+                    "topLabel" : "Status"
                   }
                 },
                 {
@@ -259,9 +259,8 @@ resource "newrelic_notification_channel" "google_chat_namespace" {
                 },
                 {
                   "keyValue" : {
-                    "content" : "{{issueTitle}}",
-                    "topLabel" : "Details",
-                    "contentMultiline" : "true"
+                    "content" : "{{accumulations.conditionName.[0]}}",
+                    "topLabel" : "Condition"
                   }
                 }
               ]
