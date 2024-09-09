@@ -9,6 +9,7 @@ resource "newrelic_nrql_alert_condition" "container-cpu-high" {
   for_each = toset(var.namespaces)
 
   name                           = "Container CPU usage % is too high"
+  title_template                 = "Container {{tags.containerName}} in Pod {{tags.podName}} CPU utilization % is too high"
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
@@ -17,7 +18,7 @@ resource "newrelic_nrql_alert_condition" "container-cpu-high" {
   aggregation_timer              = 60
 
   nrql {
-    query = "FROM K8sContainerSample SELECT average(cpuCoresUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET podName"
+    query = "FROM K8sContainerSample SELECT average(cpuCoresUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET podName, containerName"
   }
 
   critical {
@@ -39,6 +40,7 @@ resource "newrelic_nrql_alert_condition" "container-memory-high" {
   for_each = toset(var.namespaces)
 
   name                           = "Container memory usage % is too high"
+  title_template                 = "Container {{tags.containerName}} in Pod {{tags.podName}} memory utilization % is too high"
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
@@ -47,7 +49,7 @@ resource "newrelic_nrql_alert_condition" "container-memory-high" {
   aggregation_timer              = 60
 
   nrql {
-    query = "FROM K8sContainerSample SELECT average(memoryWorkingSetUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET podName"
+    query = "FROM K8sContainerSample SELECT average(memoryWorkingSetUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET podName, containerName"
   }
 
   critical {
@@ -69,6 +71,7 @@ resource "newrelic_nrql_alert_condition" "pod-not-ready" {
   for_each = toset(var.namespaces)
 
   name                           = "Pod is not ready"
+  title_template                 = "Pod {{tags.podName}} is not ready"
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
@@ -91,8 +94,10 @@ resource "newrelic_nrql_alert_condition" "pod-not-ready" {
 resource "newrelic_nrql_alert_condition" "job_not_ready" {
   for_each = toset(var.namespaces)
 
-  name                           = "Job is not ready"
   enabled                        = var.enable_job_alerting
+
+  name                           = "Job is not ready"
+  title_template                 = "Job {{tags.podName}} is not ready"
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
@@ -116,6 +121,7 @@ resource "newrelic_nrql_alert_condition" "container-out-of-space" {
   for_each = toset(var.namespaces)
 
   name                           = "Container is running out of space"
+  title_template                 = "Container {{tags.containerName}} in Pod {{tags.podName}} is running out of space"
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
@@ -124,7 +130,7 @@ resource "newrelic_nrql_alert_condition" "container-out-of-space" {
   aggregation_timer              = 60
 
   nrql {
-    query = "FROM K8sContainerSample SELECT average(fsUsedPercent) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET podName"
+    query = "FROM K8sContainerSample SELECT average(fsUsedPercent) WHERE clusterName = '${var.cluster_name}' AND namespace = '${each.value}' FACET podName, containerName"
   }
 
   critical {
@@ -146,6 +152,7 @@ resource "newrelic_nrql_alert_condition" "replicaset-not-desired-amount" {
   for_each = toset(var.namespaces)
 
   name                           = "ReplicaSet doesn't have desired amount of pods"
+  title_template                 = "ReplicaSet {{tags.replicasetName}} doesn't have desired amount of pods"
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
@@ -169,6 +176,7 @@ resource "newrelic_nrql_alert_condition" "volume_out_of_space" {
   for_each = toset(var.namespaces)
 
   name                           = "PVC is running out of space"
+  title_template                 = "PVC {{tags.pvcName}} is running out of space"
   policy_id                      = newrelic_alert_policy.namespace[each.value].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
