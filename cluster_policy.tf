@@ -9,6 +9,7 @@ resource "newrelic_nrql_alert_condition" "cluster_does_not_response" {
   count = var.cluster_policy ? 1 : 0
 
   name                           = "Cluster doesn't response"
+  title_template                 = "Cluster {{entity.name}} does not respond"
   policy_id                      = newrelic_alert_policy.cluster.0.id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
@@ -32,6 +33,7 @@ resource "newrelic_nrql_alert_condition" "node_cpu_high" {
   count = var.cluster_policy ? 1 : 0
 
   name                           = "Node allocatable CPU utilization % is too high"
+  title_template                 = "Node {{tags.nodeName}} CPU utilization % is too high"
   policy_id                      = newrelic_alert_policy.cluster.0.id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
@@ -62,6 +64,7 @@ resource "newrelic_nrql_alert_condition" "node_memory_high" {
   count = var.cluster_policy ? 1 : 0
 
   name                           = "Node allocatable memory utilization % is too high"
+  title_template                 = "Node {{tags.nodeName}} memory utilization % is too high"
   policy_id                      = newrelic_alert_policy.cluster.0.id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
@@ -92,6 +95,7 @@ resource "newrelic_nrql_alert_condition" "node_disk_high" {
   count = var.cluster_policy ? 1 : 0
 
   name                           = "Node disk % is too high"
+  title_template                 = "Node {{tags.nodeName}} disk usage is too high"
   policy_id                      = newrelic_alert_policy.cluster.0.id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
@@ -117,28 +121,6 @@ resource "newrelic_nrql_alert_condition" "node_disk_high" {
     threshold_occurrences = "all"
   }
 }
-
-#resource "newrelic_nrql_alert_condition" "node_uptime_12h" {
-#  count                          = var.cluster_policy ? 1 : 0
-#  name                           = "Node uptime > 12h"
-#  policy_id                      = newrelic_alert_policy.cluster.0.id
-#  violation_time_limit_seconds   = 86400
-#  expiration_duration            = 300
-#  close_violations_on_expiration = true
-#  aggregation_method             = "event_timer"
-#  aggregation_timer              = 60
-#
-#  nrql {
-#    query = "FROM K8sPodSample SELECT (latest(timestamp) - min(createdAt*1000))/1000/60/60 AS 'uptime (hours)' WHERE clusterName = '${var.cluster_name}' AND createdBy = 'aws-node' AND nodeName in (FROM K8sNodeSample SELECT uniques(nodeName) WHERE clusterName = '${var.cluster_name}' AND `label.one.newrelic.com/node-uptime-alert` = '12h') FACET nodeName"
-#  }
-#
-#  critical {
-#    operator              = "above"
-#    threshold             = 12
-#    threshold_duration    = 60
-#    threshold_occurrences = "all"
-#  }
-#}
 
 resource "newrelic_notification_channel" "email_cluster" {
   for_each = {
@@ -177,7 +159,8 @@ resource "newrelic_notification_channel" "google_chat_cluster" {
                 {
                   "keyValue" : {
                     "topLabel" : "NEW RELIC INCIDENT {{issueId}}",
-                    "content" : "{{#eq 'HIGH' priority}}WARNING{{else}}{{priority}}{{/eq}} - {{#if issueClosedAt}}closed{{else if issueAcknowledgedAt}}acknowledged{{else}}open{{/if}}",
+                    "content" : "{{issueTitle}}",
+                    "contentMultiline" : "true"
                     "onClick" : {
                       "openLink" : {
                         "url" : "{{issuePageUrl}}"
@@ -191,8 +174,8 @@ resource "newrelic_notification_channel" "google_chat_cluster" {
               "widgets" : [
                 {
                   "keyValue" : {
-                    "content" : "{{accumulations.conditionName.[0]}}",
-                    "topLabel" : "Condition"
+                    "content" : "{{#eq 'HIGH' priority}}WARNING{{else}}{{priority}}{{/eq}} - {{#if issueClosedAt}}closed{{else if issueAcknowledgedAt}}acknowledged{{else}}open{{/if}}",
+                    "topLabel" : "Status"
                   }
                 },
                 {
@@ -203,9 +186,8 @@ resource "newrelic_notification_channel" "google_chat_cluster" {
                 },
                 {
                   "keyValue" : {
-                    "content" : "{{issueTitle}}",
-                    "topLabel" : "Details",
-                    "contentMultiline" : "true"
+                    "content" : "{{accumulations.conditionName.[0]}}",
+                    "topLabel" : "Condition"
                   }
                 }
               ]
