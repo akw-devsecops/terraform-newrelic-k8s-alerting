@@ -47,15 +47,15 @@ resource "newrelic_nrql_alert_condition" "node_cpu_high" {
 
   critical {
     operator              = "above"
-    threshold             = 95
-    threshold_duration    = 300
+    threshold             = 90
+    threshold_duration    = 900
     threshold_occurrences = "all"
   }
 
   warning {
     operator              = "above"
-    threshold             = 90
-    threshold_duration    = 300
+    threshold             = 80
+    threshold_duration    = 1800
     threshold_occurrences = "all"
   }
 }
@@ -110,13 +110,6 @@ resource "newrelic_nrql_alert_condition" "node_disk_high" {
   critical {
     operator              = "above"
     threshold             = 90
-    threshold_duration    = 300
-    threshold_occurrences = "all"
-  }
-
-  warning {
-    operator              = "above"
-    threshold             = 80
     threshold_duration    = 300
     threshold_occurrences = "all"
   }
