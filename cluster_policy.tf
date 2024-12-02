@@ -113,13 +113,6 @@ resource "newrelic_nrql_alert_condition" "node_disk_high" {
     threshold_duration    = 300
     threshold_occurrences = "all"
   }
-
-  warning {
-    operator              = "above"
-    threshold             = 80
-    threshold_duration    = 300
-    threshold_occurrences = "all"
-  }
 }
 
 resource "newrelic_notification_channel" "email_cluster" {
