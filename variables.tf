@@ -38,3 +38,9 @@ variable "enable_job_alerting" {
   default     = true
   description = "Determines whether to alert on job errors."
 }
+
+variable "enable_volume_alerting" {
+  type        = bool
+  default     = true
+  description = "Determines whether to alert on volume usage."
+}

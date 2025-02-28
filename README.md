@@ -55,6 +55,7 @@ No modules.
 | <a name="input_cluster_policy"></a> [cluster\_policy](#input\_cluster\_policy) | Set this to `false` if you don't want to create the cluster policy. | `bool` | `true` | no |
 | <a name="input_email_alert_recipient"></a> [email\_alert\_recipient](#input\_email\_alert\_recipient) | The email alert address. | `string` | `null` | no |
 | <a name="input_enable_job_alerting"></a> [enable\_job\_alerting](#input\_enable\_job\_alerting) | Determines whether to alert on job errors. | `bool` | `true` | no |
+| <a name="input_enable_volume_alerting"></a> [enable\_volume\_alerting](#input\_enable\_volume\_alerting) | Determines whether to alert on volume usage. | `bool` | `true` | no |
 | <a name="input_google_chat_alert_url"></a> [google\_chat\_alert\_url](#input\_google\_chat\_alert\_url) | The Google Chat alert channel webhook URL. | `string` | `null` | no |
 | <a name="input_namespaces"></a> [namespaces](#input\_namespaces) | List of namespaces to be monitored. | `list(string)` | `[]` | no |
 
