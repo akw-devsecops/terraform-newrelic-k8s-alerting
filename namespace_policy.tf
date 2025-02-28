@@ -94,7 +94,7 @@ resource "newrelic_nrql_alert_condition" "pod-not-ready" {
 resource "newrelic_nrql_alert_condition" "job_not_ready" {
   for_each = toset(var.namespaces)
 
-  enabled                        = var.enable_job_alerting
+  enabled = var.enable_job_alerting
 
   name                           = "Job is not ready"
   title_template                 = "Job {{tags.podName}} is not ready"
@@ -174,6 +174,8 @@ resource "newrelic_nrql_alert_condition" "replicaset-not-desired-amount" {
 
 resource "newrelic_nrql_alert_condition" "volume_out_of_space" {
   for_each = toset(var.namespaces)
+
+  enabled = var.enable_volume_alerting
 
   name                           = "PVC is running out of space"
   title_template                 = "PVC {{tags.pvcName}} is running out of space"
