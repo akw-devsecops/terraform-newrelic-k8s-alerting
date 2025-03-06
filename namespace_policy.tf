@@ -96,9 +96,7 @@ resource "newrelic_nrql_alert_condition" "pod_not_ready" {
 }
 
 resource "newrelic_nrql_alert_condition" "job_not_ready" {
-  count = length(var.namespaces) > 0 ? 1 : 0
-
-  enabled = var.enable_job_alerting
+  count = length(var.namespaces) > 0 && var.enable_job_alerting ? 1 : 0
 
   name                           = "Job is not ready"
   title_template                 = "Job {{tags.podName}} is not ready"
@@ -177,9 +175,7 @@ resource "newrelic_nrql_alert_condition" "replicaset_not_desired_amount" {
 }
 
 resource "newrelic_nrql_alert_condition" "volume_out_of_space" {
-  count = length(var.namespaces) > 0 ? 1 : 0
-
-  enabled = var.enable_volume_alerting
+  count = length(var.namespaces) > 0 && var.enable_volume_alerting ? 1 : 0
 
   name                           = "PVC is running out of space"
   title_template                 = "PVC {{tags.pvcName}} is running out of space"
