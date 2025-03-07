@@ -337,7 +337,7 @@ resource "newrelic_workflow" "namespace" {
       destination.name => destination if var.email_alert_recipient != null
     }
     content {
-      channel_id = newrelic_notification_channel.email_namespace[newrelic_alert_policy.namespace[0].name].id
+      channel_id = newrelic_notification_channel.email_namespace[0].id
     }
   }
 
@@ -347,7 +347,7 @@ resource "newrelic_workflow" "namespace" {
       destination.name => destination if var.google_chat_alert_url != null
     }
     content {
-      channel_id = newrelic_notification_channel.google_chat_namespace[newrelic_alert_policy.namespace[0].name].id
+      channel_id = newrelic_notification_channel.google_chat_namespace[0].id
     }
   }
 }
