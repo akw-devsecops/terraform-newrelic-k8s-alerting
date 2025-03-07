@@ -311,11 +311,11 @@ resource "newrelic_notification_channel" "google_chat_namespace" {
 resource "newrelic_workflow" "namespace" {
   count = length(var.namespaces) > 0 ? 1 : 0
 
-  name                  = var.channel_name
+  name                  = "${newrelic_alert_policy.namespace[0].id} - ${var.channel_name}"
   muting_rules_handling = "DONT_NOTIFY_FULLY_MUTED_ISSUES"
 
   issues_filter {
-    name = newrelic_alert_policy.namespace[0].name
+    name = newrelic_alert_policy.namespace[0].id
     type = "FILTER"
 
     predicate {
