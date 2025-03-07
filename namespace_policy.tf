@@ -209,7 +209,7 @@ resource "newrelic_nrql_alert_condition" "volume_out_of_space" {
 resource "newrelic_notification_channel" "email_namespace" {
   count = var.email_alert_recipient != null ? 1 : 0
 
-  name           = each.key
+  name           = var.channel_name
   type           = "EMAIL"
   destination_id = newrelic_notification_destination.email[0].id
   product        = "IINT"
@@ -223,7 +223,7 @@ resource "newrelic_notification_channel" "email_namespace" {
 resource "newrelic_notification_channel" "google_chat_namespace" {
   count = var.google_chat_alert_url != null ? 1 : 0
 
-  name           = each.key
+  name           = var.channel_name
   type           = "WEBHOOK"
   destination_id = newrelic_notification_destination.google_chat[0].id
   product        = "IINT" // (Workflows)
