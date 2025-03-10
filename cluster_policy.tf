@@ -18,7 +18,7 @@ resource "newrelic_nrql_alert_condition" "cluster_does_not_response" {
   aggregation_timer              = 60
 
   nrql {
-    query = "FROM K8sClusterSample SELECT count(*) WHERE clusterName = '${var.cluster_name}'"
+    query = "FROM K8sClusterSample SELECT count(clusterName) WHERE clusterName = '${var.cluster_name}' AND agentName != 'Infrastructure'"
   }
 
   critical {
