@@ -13,9 +13,11 @@ resource "newrelic_nrql_alert_condition" "cluster_does_not_response" {
   policy_id                      = newrelic_alert_policy.cluster.0.id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
-  close_violations_on_expiration = true
-  aggregation_method             = "event_timer"
-  aggregation_timer              = 60
+  open_violation_on_expiration   = true
+  close_violations_on_expiration = false
+  ignore_on_expected_termination = true
+  aggregation_method             = "event_flow"
+  aggregation_delay              = 120
 
   nrql {
     query = "FROM K8sClusterSample SELECT count(clusterName) WHERE clusterName = '${var.cluster_name}' AND agentName != 'Infrastructure'"
@@ -37,9 +39,11 @@ resource "newrelic_nrql_alert_condition" "node_cpu_high" {
   policy_id                      = newrelic_alert_policy.cluster.0.id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
+  open_violation_on_expiration   = false
   close_violations_on_expiration = true
-  aggregation_method             = "event_timer"
-  aggregation_timer              = 60
+  ignore_on_expected_termination = true
+  aggregation_method             = "event_flow"
+  aggregation_delay              = 120
 
   nrql {
     query = "FROM K8sNodeSample SELECT latest(allocatableCpuCoresUtilization) WHERE clusterName = '${var.cluster_name}' AND `label.one.newrelic.com/node-cpu-high-alert` != 'None' FACET nodeName"
@@ -68,9 +72,11 @@ resource "newrelic_nrql_alert_condition" "node_memory_high" {
   policy_id                      = newrelic_alert_policy.cluster.0.id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
+  open_violation_on_expiration   = false
   close_violations_on_expiration = true
-  aggregation_method             = "event_timer"
-  aggregation_timer              = 60
+  ignore_on_expected_termination = true
+  aggregation_method             = "event_flow"
+  aggregation_delay              = 120
 
   nrql {
     query = "FROM K8sNodeSample SELECT latest(allocatableMemoryUtilization) WHERE clusterName = '${var.cluster_name}' FACET nodeName"
@@ -99,9 +105,11 @@ resource "newrelic_nrql_alert_condition" "node_disk_high" {
   policy_id                      = newrelic_alert_policy.cluster.0.id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
+  open_violation_on_expiration   = false
   close_violations_on_expiration = true
-  aggregation_method             = "event_timer"
-  aggregation_timer              = 60
+  ignore_on_expected_termination = true
+  aggregation_method             = "event_flow"
+  aggregation_delay              = 120
 
   nrql {
     query = "FROM K8sNodeSample SELECT latest(fsCapacityUtilization) WHERE clusterName = '${var.cluster_name}' FACET nodeName"
