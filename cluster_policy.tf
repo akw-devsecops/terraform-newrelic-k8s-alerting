@@ -42,7 +42,7 @@ resource "newrelic_nrql_alert_condition" "node_cpu_high" {
   aggregation_timer              = 60
 
   nrql {
-    query = "FROM K8sNodeSample SELECT average(cpuUsedCores/capacityCpuCores*100) WHERE clusterName = '${var.cluster_name}' AND `label.one.newrelic.com/node-cpu-high-alert` != 'None' FACET nodeName"
+    query = "FROM K8sNodeSample SELECT latest(allocatableCpuCoresUtilization) WHERE clusterName = '${var.cluster_name}' AND `label.one.newrelic.com/node-cpu-high-alert` != 'None' FACET nodeName"
   }
 
   critical {
@@ -73,7 +73,7 @@ resource "newrelic_nrql_alert_condition" "node_memory_high" {
   aggregation_timer              = 60
 
   nrql {
-    query = "FROM K8sNodeSample SELECT average(memoryWorkingSetBytes/capacityMemoryBytes*100) WHERE clusterName = '${var.cluster_name}' FACET nodeName"
+    query = "FROM K8sNodeSample SELECT latest(allocatableMemoryUtilization) WHERE clusterName = '${var.cluster_name}' FACET nodeName"
   }
 
   critical {
@@ -104,7 +104,7 @@ resource "newrelic_nrql_alert_condition" "node_disk_high" {
   aggregation_timer              = 60
 
   nrql {
-    query = "FROM Metric SELECT (average(k8s.node.fsUsedBytes) / average(k8s.node.fsCapacityBytes) * 100) AS 'Disk Util %' WHERE clusterName = '${var.cluster_name}' FACET nodeName"
+    query = "FROM K8sNodeSample SELECT latest(fsCapacityUtilization) WHERE clusterName = '${var.cluster_name}' FACET nodeName"
   }
 
   critical {
