@@ -42,11 +42,11 @@ resource "newrelic_nrql_alert_condition" "node_cpu_high" {
   open_violation_on_expiration   = false
   close_violations_on_expiration = true
   ignore_on_expected_termination = true
-  aggregation_method             = "event_flow"
-  aggregation_delay              = 120
+  aggregation_method             = "event_timer"
+  aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sNodeSample SELECT latest(allocatableCpuCoresUtilization) WHERE clusterName = '${var.cluster_name}' AND `label.one.newrelic.com/node-cpu-high-alert` != 'None' FACET nodeName"
+    query = "FROM K8sNodeSample SELECT average(allocatableCpuCoresUtilization) WHERE clusterName = '${var.cluster_name}' AND `label.one.newrelic.com/node-cpu-high-alert` != 'None' AND allocatableCpuCoresUtilization >= 80 FACET nodeName"
   }
 
   critical {
@@ -75,11 +75,11 @@ resource "newrelic_nrql_alert_condition" "node_memory_high" {
   open_violation_on_expiration   = false
   close_violations_on_expiration = true
   ignore_on_expected_termination = true
-  aggregation_method             = "event_flow"
-  aggregation_delay              = 120
+  aggregation_method             = "event_timer"
+  aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sNodeSample SELECT latest(allocatableMemoryUtilization) WHERE clusterName = '${var.cluster_name}' FACET nodeName"
+    query = "FROM K8sNodeSample SELECT average(allocatableMemoryUtilization) WHERE clusterName = '${var.cluster_name}' AND allocatableMemoryUtilization >= 90 FACET nodeName"
   }
 
   critical {
@@ -108,11 +108,11 @@ resource "newrelic_nrql_alert_condition" "node_disk_high" {
   open_violation_on_expiration   = false
   close_violations_on_expiration = true
   ignore_on_expected_termination = true
-  aggregation_method             = "event_flow"
-  aggregation_delay              = 120
+  aggregation_method             = "event_timer"
+  aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sNodeSample SELECT latest(fsCapacityUtilization) WHERE clusterName = '${var.cluster_name}' FACET nodeName"
+    query = "FROM K8sNodeSample SELECT average(fsCapacityUtilization) WHERE clusterName = '${var.cluster_name}' AND fsCapacityUtilization >= 90 FACET nodeName"
   }
 
   critical {
