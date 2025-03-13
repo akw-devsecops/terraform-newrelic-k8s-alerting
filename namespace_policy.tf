@@ -17,12 +17,14 @@ resource "newrelic_nrql_alert_condition" "container_cpu_high" {
   policy_id                      = newrelic_alert_policy.namespace[0].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
+  open_violation_on_expiration   = false
   close_violations_on_expiration = true
+  ignore_on_expected_termination = true
   aggregation_method             = "event_timer"
-  aggregation_timer              = 60
+  aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sContainerSample SELECT average(cpuCoresUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) FACET namespace, podName, containerName"
+    query = "FROM K8sContainerSample SELECT average(requestedCpuCoresUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND requestedCpuCoresUtilization >= 90 FACET namespace, podName, containerName"
   }
 
   critical {
@@ -48,12 +50,14 @@ resource "newrelic_nrql_alert_condition" "container_memory_high" {
   policy_id                      = newrelic_alert_policy.namespace[0].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
+  open_violation_on_expiration   = false
   close_violations_on_expiration = true
+  ignore_on_expected_termination = true
   aggregation_method             = "event_timer"
-  aggregation_timer              = 60
+  aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sContainerSample SELECT average(memoryWorkingSetUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) FACET namespace, podName, containerName"
+    query = "FROM K8sContainerSample SELECT average(requestedMemoryWorkingSetUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND requestedMemoryWorkingSetUtilization >= 85 FACET namespace, podName, containerName"
   }
 
   critical {
@@ -79,12 +83,14 @@ resource "newrelic_nrql_alert_condition" "pod_not_ready" {
   policy_id                      = newrelic_alert_policy.namespace[0].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
+  open_violation_on_expiration   = false
   close_violations_on_expiration = true
+  ignore_on_expected_termination = true
   aggregation_method             = "event_timer"
-  aggregation_timer              = 60
+  aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sPodSample SELECT latest(isReady) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND status != 'Succeeded' AND createdKind != 'Job' FACET namespace, podName"
+    query = "FROM K8sPodSample SELECT latest(isReady) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND status != 'Succeeded' AND createdKind != 'Job' AND isReady != 1 FACET namespace, podName"
   }
 
   critical {
@@ -102,13 +108,14 @@ resource "newrelic_nrql_alert_condition" "job_not_ready" {
   title_template                 = "Job {{tags.podName}} is not ready"
   policy_id                      = newrelic_alert_policy.namespace[0].id
   violation_time_limit_seconds   = 86400
-  expiration_duration            = 300
+  open_violation_on_expiration   = false
   close_violations_on_expiration = true
+  ignore_on_expected_termination = true
   aggregation_method             = "event_timer"
-  aggregation_timer              = 60
+  aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sPodSample SELECT latest(isReady) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND status != 'Succeeded' AND createdKind = 'Job' FACET namespace, podName"
+    query = "FROM K8sPodSample SELECT latest(isReady) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND status != 'Succeeded' AND createdKind = 'Job' AND isReady != 1 FACET namespace, podName"
   }
 
   critical {
@@ -127,12 +134,14 @@ resource "newrelic_nrql_alert_condition" "container_out_of_space" {
   policy_id                      = newrelic_alert_policy.namespace[0].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
+  open_violation_on_expiration   = false
   close_violations_on_expiration = true
+  ignore_on_expected_termination = true
   aggregation_method             = "event_timer"
-  aggregation_timer              = 60
+  aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sContainerSample SELECT average(fsUsedPercent) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) FACET namespace, podName, containerName"
+    query = "FROM K8sContainerSample SELECT average(fsUsedPercent) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND fsUsedPercent >= 75 FACET namespace, podName, containerName"
   }
 
   critical {
@@ -158,12 +167,14 @@ resource "newrelic_nrql_alert_condition" "replicaset_not_desired_amount" {
   policy_id                      = newrelic_alert_policy.namespace[0].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
+  open_violation_on_expiration   = false
   close_violations_on_expiration = true
+  ignore_on_expected_termination = true
   aggregation_method             = "event_timer"
-  aggregation_timer              = 60
+  aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sReplicasetSample SELECT latest(podsDesired - podsReady) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) FACET namespace, replicasetName"
+    query = "FROM K8sReplicasetSample SELECT latest(podsDesired - podsReady) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND (podsDesired - podsReady) > 0 FACET namespace, replicasetName"
   }
 
   critical {
@@ -182,13 +193,14 @@ resource "newrelic_nrql_alert_condition" "volume_out_of_space" {
   policy_id                      = newrelic_alert_policy.namespace[0].id
   violation_time_limit_seconds   = 86400
   expiration_duration            = 300
+  open_violation_on_expiration   = false
   close_violations_on_expiration = true
+  ignore_on_expected_termination = true
   aggregation_method             = "event_timer"
-  aggregation_timer              = 60
-  fill_option                    = "last_value"
+  aggregation_timer              = 5
 
   nrql {
-    query = "FROM Metric SELECT average(k8s.volume.fsUsedPercent) WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.namespaceName IN (${local.joined_namespaces}) FACET k8s.pvcName"
+    query = "FROM Metric SELECT average(k8s.volume.fsUsedPercent) WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.namespaceName IN (${local.joined_namespaces}) AND k8s.volume.fsUsedPercent >= 75 FACET k8s.pvcName"
   }
 
   critical {
