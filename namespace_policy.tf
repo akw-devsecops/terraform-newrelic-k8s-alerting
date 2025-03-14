@@ -108,6 +108,7 @@ resource "newrelic_nrql_alert_condition" "job_not_ready" {
   title_template                 = "Job {{tags.podName}} is not ready"
   policy_id                      = newrelic_alert_policy.namespace[0].id
   violation_time_limit_seconds   = 86400
+  expiration_duration            = 300
   open_violation_on_expiration   = false
   close_violations_on_expiration = true
   ignore_on_expected_termination = true
