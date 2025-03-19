@@ -57,7 +57,7 @@ resource "newrelic_nrql_alert_condition" "container_memory_high" {
   aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sContainerSample SELECT average(requestedMemoryWorkingSetUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND requestedMemoryWorkingSetUtilization >= 85 FACET namespace, podName, containerName"
+    query = "FROM K8sContainerSample SELECT average(requestedMemoryWorkingSetUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND requestedMemoryWorkingSetUtilization >= 85 AND `label.one.newrelic.com/container-memory-high-alert` != 'None' FACET namespace, podName, containerName"
   }
 
   critical {
