@@ -79,7 +79,7 @@ resource "newrelic_nrql_alert_condition" "node_memory_high" {
   aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sNodeSample SELECT average(allocatableMemoryUtilization) WHERE clusterName = '${var.cluster_name}' AND allocatableMemoryUtilization >= 90 FACET nodeName"
+    query = "FROM K8sNodeSample SELECT average(allocatableMemoryUtilization) WHERE clusterName = '${var.cluster_name}' AND allocatableMemoryUtilization >= 90 AND `label.one.newrelic.com/node-memory-high-alert` != 'None' FACET nodeName"
   }
 
   critical {
@@ -112,7 +112,7 @@ resource "newrelic_nrql_alert_condition" "node_disk_high" {
   aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sNodeSample SELECT average(fsCapacityUtilization) WHERE clusterName = '${var.cluster_name}' AND fsCapacityUtilization >= 90 FACET nodeName"
+    query = "FROM K8sNodeSample SELECT average(fsCapacityUtilization) WHERE clusterName = '${var.cluster_name}' AND fsCapacityUtilization >= 90 AND `label.one.newrelic.com/node-disk-high-alert` != 'None' FACET nodeName"
   }
 
   critical {
