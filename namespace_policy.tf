@@ -24,7 +24,7 @@ resource "newrelic_nrql_alert_condition" "container_cpu_high" {
   aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sContainerSample SELECT average(requestedCpuCoresUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND requestedCpuCoresUtilization >= 90 FACET namespace, podName, containerName"
+    query = "FROM K8sContainerSample SELECT average(requestedCpuCoresUtilization) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND requestedCpuCoresUtilization >= 90 AND `label.one.newrelic.com/container-cpu-high-alert` != 'None' FACET namespace, podName, containerName"
   }
 
   critical {
@@ -116,7 +116,7 @@ resource "newrelic_nrql_alert_condition" "job_not_ready" {
   aggregation_timer              = 5
 
   nrql {
-    query = "FROM K8sPodSample SELECT latest(isReady) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND status != 'Succeeded' AND createdKind = 'Job' AND isReady != 1 FACET namespace, podName"
+    query = "FROM K8sPodSample SELECT latest(isReady) WHERE clusterName = '${var.cluster_name}' AND namespace IN (${local.joined_namespaces}) AND status != 'Succeeded' AND createdKind = 'Job' AND isReady != 1 AND `label.one.newrelic.com/job-ready-alert` != 'None' FACET namespace, podName"
   }
 
   critical {
@@ -201,7 +201,7 @@ resource "newrelic_nrql_alert_condition" "volume_out_of_space" {
   aggregation_timer              = 5
 
   nrql {
-    query = "FROM Metric SELECT average(k8s.volume.fsUsedPercent) WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.namespaceName IN (${local.joined_namespaces}) AND k8s.volume.fsUsedPercent >= 75 FACET k8s.pvcName"
+    query = "FROM Metric SELECT average(k8s.volume.fsUsedPercent) WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.namespaceName IN (${local.joined_namespaces}) AND k8s.volume.fsUsedPercent >= 75 AND `label.one.newrelic.com/volume-usage-high-alert` != 'None' FACET k8s.pvcName"
   }
 
   critical {
