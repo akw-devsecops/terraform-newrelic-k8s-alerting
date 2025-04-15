@@ -123,6 +123,32 @@ resource "newrelic_nrql_alert_condition" "node_disk_high" {
   }
 }
 
+resource "newrelic_nrql_alert_condition" "node_disk_low_inode" {
+  count = var.cluster_policy ? 1 : 0
+
+  name                           = "Node disk free inode % is too low"
+  title_template                 = "Node {{tags.nodeName}} disk inode % is too low"
+  policy_id                      = newrelic_alert_policy.cluster.0.id
+  violation_time_limit_seconds   = 86400
+  expiration_duration            = 300
+  open_violation_on_expiration   = false
+  close_violations_on_expiration = true
+  ignore_on_expected_termination = true
+  aggregation_method             = "event_timer"
+  aggregation_timer              = 5
+
+  nrql {
+    query = "FROM K8sNodeSample SELECT latest((fsInodesFree/fsInodes)*100) AS `Inode Free (%)` WHERE clusterName = '${var.cluster_name}' AND ((fsInodesFree/fsInodes)*100)<=10 FACET nodeName"
+  }
+
+  critical {
+    operator              = "below"
+    threshold             = 10
+    threshold_duration    = 300
+    threshold_occurrences = "all"
+  }
+}
+
 resource "newrelic_notification_channel" "email_cluster" {
   for_each = {
     for policy in newrelic_alert_policy.cluster : policy.name => policy if var.email_alert_recipient != null
