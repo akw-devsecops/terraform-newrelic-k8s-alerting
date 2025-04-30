@@ -234,7 +234,7 @@ resource "newrelic_nrql_alert_condition" "volume_out_of_inodes" {
   aggregation_timer              = 5
 
   nrql {
-    query = "FROM Metric SELECT ( average(k8s.volume.fsInodesFree) / average(k8s.volume.fsInodes) * 100) AS `PVC inodes Free (%)` WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.namespaceName IN (${local.joined_namespaces}) AND `label.one.newrelic.com/volume-usage-high-alert` != 'None' FACET k8s.pvcName"
+    query = "FROM K8sVolumeSample SELECT average(fsInodesFree/fsInodes*100) AS `PVC inodes Free (%)` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN (${local.joined_namespaces}) AND (fsInodesFree/fsInodes*100) <= 20 AND `label.one.newrelic.com/volume-usage-high-alert` != 'None' FACET pvcName"
   }
 
   critical {
