@@ -219,6 +219,39 @@ resource "newrelic_nrql_alert_condition" "volume_out_of_space" {
   }
 }
 
+resource "newrelic_nrql_alert_condition" "volume_out_of_inodes" {
+  count = length(var.namespaces) > 0 && var.enable_volume_alerting ? 1 : 0
+
+  name                           = "PVC is running out of inodes"
+  title_template                 = "PVC {{tags.pvcName}} is running out of inodes"
+  policy_id                      = newrelic_alert_policy.namespace[0].id
+  violation_time_limit_seconds   = 86400
+  expiration_duration            = 300
+  open_violation_on_expiration   = false
+  close_violations_on_expiration = true
+  ignore_on_expected_termination = true
+  aggregation_method             = "event_timer"
+  aggregation_timer              = 5
+
+  nrql {
+    query = "FROM K8sVolumeSample SELECT average(fsInodesFree/fsInodes*100) AS `PVC inodes Free (%)` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN (${local.joined_namespaces}) AND (fsInodesFree/fsInodes*100) <= 20 AND `label.one.newrelic.com/volume-usage-high-alert` != 'None' FACET pvcName"
+  }
+
+  critical {
+    operator              = "below"
+    threshold             = 10
+    threshold_duration    = 300
+    threshold_occurrences = "all"
+  }
+
+  warning {
+    operator              = "below"
+    threshold             = 20
+    threshold_duration    = 300
+    threshold_occurrences = "all"
+  }
+}
+
 resource "newrelic_notification_channel" "email_namespace" {
   count = var.email_alert_recipient != null ? 1 : 0
 
